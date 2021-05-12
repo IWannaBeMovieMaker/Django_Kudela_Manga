@@ -7,7 +7,7 @@ def index(request):
 
     # Generate counts of some of the main objects
     num_mangas = Manga.objects.all().count()
-    mangas = Manga.objects.order_by('-rating')[:3]
+    mangas = Manga.objects.order_by('-rating')[:4]
 
     context = {
         'num_mangas': num_mangas,
