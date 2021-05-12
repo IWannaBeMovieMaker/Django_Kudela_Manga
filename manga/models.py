@@ -4,23 +4,11 @@ from django.urls import reverse
 
 
 def attachment_path(instance, filename):
-    return"film/"+ str(instance.manga.id) + "/attachments/"+ filename
+    return"manga/" + str(instance.manga.id) + "/attachments/" + filename
 
 
 class Type(models.Model):
-    SHONEN = 'SHONEN'
-    SHOJO = 'SHOJO'
-    SEISEN = 'SEISEN'
-    JOSEI = 'JOSEI'
-    KODOMOMUKE = 'KODOMOMUKE'
-    MANGAS_TYPES_CHOICES = (
-        (SHONEN, 'Shonen'),
-        (SHOJO, 'Shojo'),
-        (SEISEN, 'Seinen'),
-        (JOSEI, 'Josei'),
-        (KODOMOMUKE, 'Kodomomuke'),
-    )
-    name = models.CharField(max_length=10, choices=MANGAS_TYPES_CHOICES, default=SHOJO, verbose_name="Type name")
+    name = models.CharField(max_length=10, null=False, verbose_name="Type name")
 
     class Meta:
         ordering = ["name"]
@@ -39,6 +27,7 @@ class Manga(models.Model):
                                     verbose_name="Release date")
     pages = models.IntegerField(null=True, validators=[MinValueValidator(1), MaxValueValidator(400)],
                                 help_text="Enter an integer representing number of pages", verbose_name="Pages")
+    poster = models.ImageField(upload_to='manga/posters/%Y/%m/%d/', blank=True, null=True, verbose_name="Poster")
     rating = models.FloatField(default=5, validators=[MinValueValidator(1), MaxValueValidator(10)], null=True,
                                 help_text="Range 1-10 (10 is best, 1 is worst)", verbose_name="Rating")
     types = models.ManyToManyField(Type, help_text='Select a Type for this Manga')
@@ -59,7 +48,6 @@ class Attachment(models.Model):
     file = models.FileField(upload_to=attachment_path, null=True, verbose_name="File")
 
     TYPE_OF_ATTACHMENT = (
-    ('Poster', 'Poster'),
     ('Opening', 'Opening'),
     ('text', 'Text'),
     ('video', 'Video'),
@@ -67,7 +55,7 @@ class Attachment(models.Model):
     ('Manga', 'Manga'),
     )
 
-    type = models.CharField(max_length=7, choices=TYPE_OF_ATTACHMENT, default='Poster', help_text='Select allowed attachment type', verbose_name="Attachment type")
+    type = models.CharField(max_length=7, choices=TYPE_OF_ATTACHMENT, blank=True, default='image', help_text='Select allowed attachment type', verbose_name="Attachment type")
 
     manga = models.ForeignKey(Manga, on_delete=models.CASCADE)
 
