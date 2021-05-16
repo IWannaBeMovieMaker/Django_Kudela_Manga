@@ -1,0 +1,5 @@
+<ol class="list-group">
+    {% for manga in mangas %}
+    <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center"><a class="text-dark" href="{% url 'manga_detail' manga.id %}"><strong>{{ manga.title }}</strong></a> <span class="badge badge-pill badge-warning">{{ manga.rating }}</span></li>
+    {% endfor %}
+</ol>

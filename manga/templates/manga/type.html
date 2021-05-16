@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}List of mangas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h2>Manga's list: {{ view.kwargs.type_name }}</h2>
+    </div>
+</div>
+<div class="row">
+    {% for manga in manga_type %}
+    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="card">
+            {% if manga.poster %}
+            <img class="card-img-top" src="{{ manga.poster.url }}" alt="{{ manga.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h4 class="card-title"><a href="{% url 'manga_detail' manga.pk %}">{{ manga.title }}</a></h4>
+                <p class="card-text">{% for type in manga.types.all %}<a href="{% url 'manga_type' type.name %}" class="btn btn-info">{{ type.name }}</a> {% endfor %}</p>
+                <a href="{% url 'manga_detail' manga.pk %}" class="btn btn-primary">Description</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <strong>Total number of Mangas:</strong> {{ num_mangas }}
+    </div>
+</div>
+{% endblock %} 
