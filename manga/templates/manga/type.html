@@ -15,9 +15,9 @@
             <img class="card-img-top" src="{{ manga.poster.url }}" alt="{{ manga.title }}">
             {% endif %}
             <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'manga_detail' manga.pk %}">{{ manga.title }}</a></h4>
-                <p class="card-text">{% for type in manga.types.all %}<a href="{% url 'manga_type' type.name %}" class="btn btn-info">{{ type.name }}</a> {% endfor %}</p>
-                <a href="{% url 'manga_detail' manga.pk %}" class="btn btn-primary">Description</a>
+                <h4 class="card-title"><a href="{% url 'manga-detail' manga.pk %}">{{ manga.title }}</a></h4>
+                <p class="card-text">{% for type in manga.types.all %}<a href="{% url 'manga-type' type.name %}" class="btn btn-info">{{ type.name }}</a> {% endfor %}</p>
+                <a href="{% url 'manga-detail' manga.pk %}" class="btn btn-primary">Description</a>
             </div>
         </div>
     </div>

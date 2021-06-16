@@ -4,14 +4,14 @@
     <div class="row mt-3 mb-3 pb-2">
         <div class="col-md-2">
             {% if manga.poster %}
-            <a href="{% url 'manga_detail' manga.id %}"><img class="img-fluid" src="{{ manga.poster.url }}" alt="{{ manga.title }}"></a>
+            <a href="{% url 'manga-detail' manga.id %}"><img class="img-fluid" src="{{ manga.poster.url }}" alt="{{ manga.title }}"></a>
             {% endif %}
         </div>
         <div class="col-md-8">
-            <h4><a href="{% url 'manga_detail' manga.id %}">{{ manga.title }}</a></h4>
+            <h4><a href="{% url 'manga-detail' manga.id %}">{{ manga.title }}</a></h4>
             <p>{{ manga.plot|truncatewords:30 }}</p>
             <p class="border-top pt-2">Pages: <b>{{ manga.pages }}.</b> Release date: <b>{{ manga.release_date }}</b></p>
-            <p>Types: {% for type in manga.types.all %}<a href="{% url 'manga_type' type.name %}" class="btn btn-light">{{ type.name }}</a> {% endfor %}</p>
+            <p>Types: {% for type in manga.types.all %}<a href="{% url 'manga-type' type.name %}" class="btn btn-light">{{ type.name }}</a> {% endfor %}</p>
         </div>
         <div class="col-md-2">
             <span class="display-4">{{ manga.rating }}</span>

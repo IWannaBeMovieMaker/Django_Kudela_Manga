@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
+from django.utils.html import format_html
 
 
 def attachment_path(instance, filename):
@@ -12,9 +13,14 @@ class Type(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "Type"
+        verbose_name_plural = "Types"
 
     def __str__(self):
         return self.name
+
+    def manga_count(self, obj):
+        return obj.manga_set.count()
 
 
 class Manga(models.Model):
@@ -41,6 +47,12 @@ class Manga(models.Model):
     def get_absolute_url(self):
         return reverse('Manga-detail', args=[str(self.id)])
 
+    def release_year(self):
+        return self.release_date.year
+
+    def rate_percent(self):
+        return format_html("{} %", int(self.rate * 10))
+
 
 class Attachment(models.Model):
     title = models.CharField(max_length=200, verbose_name="Title")
@@ -61,7 +73,7 @@ class Attachment(models.Model):
 
 
 class Meta:
-    ordering = ["-last_update", "type"]
+    order_with_respect_to = 'manga'
 
     def __str__(self):
         return f"{self.title}, ({self.type})"

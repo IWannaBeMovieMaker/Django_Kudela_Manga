@@ -1,7 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 
+from manga.forms import MangaModelForm
 from manga.models import Manga, Type, Attachment
 
 
@@ -48,7 +52,6 @@ class MangaListView(ListView):
 
 class MangaDetailView(DetailView):
     model = Manga
-
     context_object_name = 'manga_detail'
     template_name = 'manga/detail.html'
 
@@ -73,3 +76,42 @@ class NewMangaListView(ListView):
     context_object_name = 'mangas'
     queryset = Manga.objects.order_by('release_date').all()
     paginate_by = 2
+
+
+class MangaCreate(CreateView):
+    model = Manga
+    fields = ['title', 'author', 'plot', 'chapter', 'plot', 'release_date', 'pages', 'poster', 'rating', 'types']
+    initial = {'rating': '5'}
+    success_url = reverse_lazy('mangas')
+
+class MangaUpdate(UpdateView):
+    model = Manga
+    template_name = 'manga/manga_bootstrap_form.html'
+    form_class = MangaModelForm
+    success_url = reverse_lazy('mangas')
+
+class MangaDelete(DeleteView):
+    model = Manga
+    success_url = reverse_lazy('mangas')
+"""
+def edit_film(request, pk):
+    film = get_object_or_404(Film, pk=pk)
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request (binding):
+        form = MangaForm(request.POST)
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            #film.due_back = form.cleaned_data['renewal_date']
+            film.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('manga_list') )
+    else:
+        form = MangaForm()
+    context = {
+        'form': form,
+        'data': manga,
+    }
+    return render(request, 'mangas/manga_my_form.html', context)
+"""

@@ -1,5 +1,5 @@
 <ul class="list-group">
     {% for type in types %}
-    <li class="list-group-item list-group-item-dark text-center"><a class="text-dark" href="{% url 'manga_type' type.name %}"><strong>{{ type.name }}</strong></a></li>
+    <li class="list-group-item list-group-item-dark text-center"><a class="text-dark" href="{% url 'manga-type' type.name %}"><strong>{{ type.name }}</strong></a></li>
     {% endfor %}
 </ul>
