@@ -1,11 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from django.utils.html import format_html
 
 
 def attachment_path(instance, filename):
-    return"manga/" + str(instance.manga.id) + "/attachments/" + filename
+    return "manga/" + str(instance.manga.id) + "/attachments/" + filename
 
 
 class Type(models.Model):
@@ -35,7 +36,7 @@ class Manga(models.Model):
                                 help_text="Enter an integer representing number of pages", verbose_name="Pages")
     poster = models.ImageField(upload_to='manga/posters/%Y/%m/%d/', blank=True, null=True, verbose_name="Poster")
     rating = models.FloatField(default=5, validators=[MinValueValidator(1), MaxValueValidator(10)], null=True,
-                                help_text="Range 1-10 (10 is best, 1 is worst)", verbose_name="Rating")
+                               help_text="Range 1-10 (10 is best, 1 is worst)", verbose_name="Rating")
     types = models.ManyToManyField(Type, help_text='Select a Type for this Manga')
 
     class Meta:
@@ -60,14 +61,15 @@ class Attachment(models.Model):
     file = models.FileField(upload_to=attachment_path, null=True, verbose_name="File")
 
     TYPE_OF_ATTACHMENT = (
-    ('Opening', 'Opening'),
-    ('text', 'Text'),
-    ('video', 'Video'),
-    ('other', 'Other'),
-    ('Manga', 'Manga'),
+        ('Opening', 'Opening'),
+        ('text', 'Text'),
+        ('video', 'Video'),
+        ('other', 'Other'),
+        ('Manga', 'Manga'),
     )
 
-    type = models.CharField(max_length=7, choices=TYPE_OF_ATTACHMENT, blank=True, default='image', help_text='Select allowed attachment type', verbose_name="Attachment type")
+    type = models.CharField(max_length=7, choices=TYPE_OF_ATTACHMENT, blank=True, default='image',
+                            help_text='Select allowed attachment type', verbose_name="Attachment type")
 
     manga = models.ForeignKey(Manga, on_delete=models.CASCADE)
 
@@ -77,3 +79,18 @@ class Meta:
 
     def __str__(self):
         return f"{self.title}, ({self.type})"
+
+
+class Review(models.Model):
+    text = models.TextField(verbose_name="Text")
+    edit_date = models.DateTimeField(auto_now=True)
+    rate = models.IntegerField(default=5,
+                               validators=[MinValueValidator(1), MaxValueValidator(10)],
+                               null=True,
+                               help_text="Please enter an integer value (range 1 - 10)",
+                               verbose_name="Rate")
+    manga = models.ForeignKey(Manga, on_delete=models.CASCADE)
+
+    # Metadata
+    class Meta:
+        order_with_respect_to = 'manga'

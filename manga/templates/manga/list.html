@@ -18,7 +18,9 @@
             <div class="card-body text-center">
                 <h4 class="card-title"><a href="{% url 'manga-detail' manga.pk %}">{{ manga.title }}</a></h4>
                 <p class="card-text">{% for type in manga.types.all %}<a href="{% url 'manga-type' type.name %}" class="btn btn-light btn-center">{{ type.name }}</a> {% endfor %}</p>
+                {% if user.is_authenticated %}
                 <a href="{% url 'manga-detail' manga.pk %}" class="btn btn-warning btn-lg">Description</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -39,7 +41,7 @@
 {% if user.is_authenticated %}
 <div class="row mb-3">
     <div class="col-sm-12 text-center">
-        <a href="{% url 'manga-create' %}" class="btn btn-success">New Manga</a>
+        <a href="{% url 'manga-create' %}" class="btn btn-warning text-dark">New Manga</a>
     </div>
 </div>
 {% endif %}

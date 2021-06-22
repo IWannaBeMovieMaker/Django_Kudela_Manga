@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-sm-12 bg-warning">
+        <h2 class="display-4 text-center">User logout</h2>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="container">
+        <div class="alert alert-info">
+            <p>You have been logged out</p>
+            <a href="{% url 'login'%}">Login in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

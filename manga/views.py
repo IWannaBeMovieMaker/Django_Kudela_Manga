@@ -1,7 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Permission
+from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.decorators.cache import never_cache
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 
@@ -33,7 +38,7 @@ class MangaListView(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        if 'genre_name' in self.kwargs:
+        if 'type_name' in self.kwargs:
             return Manga.objects.filter(types__name=self.kwargs['type_name']).all()
         else:
             return Manga.objects.all()
@@ -78,40 +83,51 @@ class NewMangaListView(ListView):
     paginate_by = 2
 
 
-class MangaCreate(CreateView):
+class MangaCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Manga
+    template_name = 'manga/manga_bootstrap_form.html'
     fields = ['title', 'author', 'plot', 'chapter', 'plot', 'release_date', 'pages', 'poster', 'rating', 'types']
     initial = {'rating': '5'}
     success_url = reverse_lazy('mangas')
+    login_url = '/accounts/login/'
+    permission_required = 'manga.add_manga'
 
-class MangaUpdate(UpdateView):
+
+class MangaUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Manga
     template_name = 'manga/manga_bootstrap_form.html'
     form_class = MangaModelForm
     success_url = reverse_lazy('mangas')
+    login_url = '/accounts/login/'
+    permission_required = 'manga.change_manga'
 
-class MangaDelete(DeleteView):
+
+class MangaDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Manga
     success_url = reverse_lazy('mangas')
-"""
-def edit_film(request, pk):
-    film = get_object_or_404(Film, pk=pk)
-    # If this is a POST request then process the Form data
-    if request.method == 'POST':
-        # Create a form instance and populate it with data from the request (binding):
-        form = MangaForm(request.POST)
-        # Check if the form is valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            #film.due_back = form.cleaned_data['renewal_date']
-            film.save()
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('manga_list') )
-    else:
-        form = MangaForm()
-    context = {
-        'form': form,
-        'data': manga,
-    }
-    return render(request, 'mangas/manga_my_form.html', context)
-"""
+    login_url = '/accounts/login/'
+    permission_required = 'manga.delete_manga'
+
+
+def error_404(request, exception=None):
+    return render(request, 'errors/404.html')
+
+
+def error_500(request):
+    return render(request, 'errors/500.html')
+
+
+def error_403(request, exception=None):
+    return render(request, 'errors/403.html')
+
+
+def error_400(request, exception=None):
+    return render(request, 'errors/400.html')
+
+
+@never_cache
+def clear_cache(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    cache.clear()
+    return HttpResponse('Cache has been cleared')

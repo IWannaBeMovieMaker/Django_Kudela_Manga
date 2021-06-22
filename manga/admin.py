@@ -44,3 +44,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
     def manga_title(self, obj):
         return obj.manga.title
+
+        @admin.register(Review)
+        class ReviewAdmin(admin.ModelAdmin):
+            list_display = ("author", "manga", "rate", "edit_date")

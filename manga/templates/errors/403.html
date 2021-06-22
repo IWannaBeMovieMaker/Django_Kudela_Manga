@@ -1,0 +1,16 @@
+  
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-sm-12 bg-warning">
+        <h2 class="display-4 text-center">Error 403: Insufficient rights</h2>
+    </div>
+</div>
+<div class="jumbotron">
+    <p class="text-center display-4">We're sorry, but you do not have sufficient rights to perform the requested action or page view.</p>
+    <p class="text-center"><a href="/">Home page</a></p>
+</div>
+{% endblock %}

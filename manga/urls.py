@@ -10,4 +10,5 @@ urlpatterns = [
     path('mangas/<int:pk>/update/', views.MangaUpdate.as_view(), name='manga-update'),
     path('mangas/<int:pk>/delete/', views.MangaDelete.as_view(), name='manga-delete'),
     #path('mangas/<int:pk>/edit/', views.edit_manga, name='manga-edit'),
+    path('clear_cache/', views.clear_cache),
 ]
